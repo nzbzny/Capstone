@@ -1,0 +1,107 @@
+Sub check_missing()
+    Columns("A:Q").Sort key1:=Range("Q2"), _
+    order1:=xlAscending, Header:=xlYes
+    Dim endRow As Integer
+    Dim currentSession As String 'for infilling durations, dest ports, etc.
+    Dim average As Double 'if there's more than one duration for the session take the average - else just the duration value
+    Dim averageCounter As Integer 'for averaging multiple duration values
+    Dim rowIP As String 'for infilling malicious / benign based on known IP's
+    Dim safeIPs(0 To 1) As String 'array of known safe ip's
+    safeIPs(0) = "100.16.9.101" 'first safe ip
+    safeIPs(1) = "100.16.9.101" 'currently only have one safe ip but set up an array for adding more
+    
+    currentSession = ""
+
+    'Determine which row is the last
+    For rowNum = 1 To 1000000 'No cowrie file has more than 1,000,000 lines so this is a safe stopping point
+        If Trim(Cells(rowNum, 1)) = "" Then
+            endRow = rowNum - 1
+            Exit For
+        End If
+    Next
+
+    For i = 1 To endRow 'Check if the value is missing, if it is replace it with the word "Missing
+        If Trim(Cells(i, 2)) = "" Then
+            Cells(i, 2).Value = "MISSING"
+        End If
+        If Trim(Cells(i, 4)) = "" Then
+            Cells(i, 4).Value = "MISSING"
+        End If
+        If Trim(Cells(i, 6)) = "" Then
+            Cells(i, 6).Value = "MISSING"
+        End If
+        If Trim(Cells(i, 8)) = "" Then
+            Cells(i, 8).Value = "MISSING"
+        End If
+        If Trim(Cells(i, 9)) = "" Then
+            Cells(i, 9).Value = "MISSING"
+        End If
+        If Trim(Cells(i, 10)) = "" Then
+            Cells(i, 10).Value = "MISSING"
+        End If
+        If Trim(Cells(i, 11)) = "" Then
+            Cells(i, 11).Value = "MISSING"
+        End If
+        If Trim(Cells(i, 12)) = "" Then
+            Cells(i, 12).Value = "MISSING"
+        End If
+        If Trim(Cells(i, 13)) = "" Then
+            Cells(i, 13).Value = "MISSING"
+        End If
+        If Trim(Cells(i, 14)) = "" Then
+            Cells(i, 14).Value = "MISSING"
+        End If
+        If Trim(Cells(i, 15)) = "" Then
+            Cells(i, 15).Value = "MISSING"
+        End If
+        If Trim(Cells(i, 16)) = "" Then
+            Cells(i, 16).Value = "MISSING"
+        End If
+        If Trim(Cells(i, 17)) = "" Then
+            Cells(i, 17).Value = "MISSING"
+        End If
+        If Trim(Cells(i, 18)) = "" Then
+            Cells(i, 18).Value = "MISSING"
+        End If
+    Next i
+
+
+    'Infill Duration
+    For i = endRow To 2 Step -1
+        If UCase(Trim(Cells(i, 17))) = currentSession Then 'if it's the same session
+            If Trim(Cells(i, 7)) = "" Then 'if the duration cell is empty
+                Cells(i, 7).Value = average 'fill it with the average
+            Else
+                average = average * averageCounter 'return it to the total value
+                average = average + Cells(i, 7).Value 'add new value to the total
+                averageCounter = averageCounter + 1 'add to the number of elements
+                average = average / averageCounter 'take average
+            End If
+        Else
+            currentSession = UCase(Trim(Cells(i, 17))) 'session column
+            If Trim(Cells(i, 7)) = "" Then 'if the average is missing for that session
+                average = -1 'return -1
+                Cells(i, 7).Value = average 'set cell value
+            Else
+                average = Cells(i, 7).Value 'duration column
+            End If
+            averageCounter = 1 'first value
+        End If
+    Next i
+    
+    'Infill Malicious
+    MsgBox endRow
+    Cells(1, 19) = "Malicious"
+    For i = 2 To endRow
+        rowIP = Trim(Cells(i, 2)) 'source ip for that row
+        For j = LBound(safeIPs) To UBound(safeIPs) 'cycle through list of safe IP's
+            If rowIP = Trim(safeIPs(j)) Then 'if the IP in that row is safe
+                Cells(i, 19).Value = 0 'set malicious to 0
+            End If
+        Next j
+        If Trim(Cells(i, 19)) = "" Then 'if after cycling through all safe IP's the malicious column is still empty (a safe IP hasn't been found)
+            Cells(i, 19).Value = 1 'label as malicious
+        End If
+    Next i
+End Sub
+
