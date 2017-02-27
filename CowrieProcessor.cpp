@@ -32,15 +32,19 @@ int CowrieProcessor::hexToDec(std::string hexValue) {
 
 void CowrieProcessor::findEventID(std::string cowrieString) { //find the event - session opened, session closed, input command, etc.
   std::string result = "";
-  int startIndex = cowrieString.find("eventid"); //eventid is the string that starts off the event id value
+  int startIndex = cowrieString.find("\"eventid\":"); //eventid is the string that starts off the event id value
   if (startIndex != -1) { //if the start index is found
-    startIndex += 11; //based on the cowrie.json log format, 11 chars after the 'e' in "eventid" is when the actual eventid starts
+    startIndex += 12; //based on the cowrie.json log format, 11 chars after the 'e' in "eventid" is when the actual eventid starts
     for (int i = startIndex; i < cowrieString.length(); i++) { //go to the whole string if necessary
       if (cowrieString[i] == 34) { //quotation mark is what ends the event id string
         eventID.push_back(result); //add to the vector
         return; //exit
       } else { //if the result string hasnt been ended yet
-        result += cowrieString[i]; //add char by char
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -49,15 +53,19 @@ void CowrieProcessor::findEventID(std::string cowrieString) { //find the event -
 
 void CowrieProcessor::findSourceIP(std::string cowrieString) { //source ip
   std::string result = "";
-  int startIndex = cowrieString.find("src_ip");
+  int startIndex = cowrieString.find("\"src_ip\":");
   if (startIndex != -1) {
-    startIndex += 10;
+    startIndex += 11;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == 34) {
         srcIP.push_back(result);
         return;
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -66,15 +74,19 @@ void CowrieProcessor::findSourceIP(std::string cowrieString) { //source ip
 
 void CowrieProcessor::findSourcePort(std::string cowrieString) { //source port
   std::string result = "";
-  int startIndex = cowrieString.find("src_port");
+  int startIndex = cowrieString.find("\"src_port\":");
   if (startIndex != -1) {
-    startIndex += 11;
+    startIndex += 12;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == ',') {
         srcPort.push_back(atoi(result.c_str()));
         return;
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -83,15 +95,19 @@ void CowrieProcessor::findSourcePort(std::string cowrieString) { //source port
 
 void CowrieProcessor::findDestinationPort(std::string cowrieString) { //destination port
   std::string result = "";
-  int startIndex = cowrieString.find("dst_port");
+  int startIndex = cowrieString.find("\"dst_port\":");
   if (startIndex != -1) {
-    startIndex += 11;
+    startIndex += 12;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == ',') {
         destPort.push_back(atoi(result.c_str()));
         return;
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        };
       }
     }
   }
@@ -100,15 +116,19 @@ void CowrieProcessor::findDestinationPort(std::string cowrieString) { //destinat
 
 void CowrieProcessor::findDestinationIP(std::string cowrieString) { //destination ip - mine
   std::string result = "";
-  int startIndex = cowrieString.find("dst_ip");
+  int startIndex = cowrieString.find("\"dst_ip\":");
   if (startIndex != -1) {
-    startIndex += 10;
+    startIndex += 11;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == 34) {
         destIP.push_back(result);
         return;
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -117,15 +137,19 @@ void CowrieProcessor::findDestinationIP(std::string cowrieString) { //destinatio
 
 void CowrieProcessor::findMessage(std::string cowrieString) { //message stating the connection was lost or dropped or a command was entered, etc.
   std::string result = "";
-  int startIndex = cowrieString.find("message");
+  int startIndex = cowrieString.find("\"message\":");
   if (startIndex != -1) {
-    startIndex += 11;
+    startIndex += 12;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == 34) {
         message.push_back(result);
         return;
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -134,15 +158,19 @@ void CowrieProcessor::findMessage(std::string cowrieString) { //message stating 
 
 void CowrieProcessor::findDuration(std::string cowrieString) { //duration of the session - this only appears when the session is closed so the other rows are infilled in excel later
   std::string result = "";
-  int startIndex = cowrieString.find("duration");
+  int startIndex = cowrieString.find("\"duration\":");
   if (startIndex != -1) {
-    startIndex += 11;
+    startIndex += 12;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == ',') {
         duration.push_back(result);
         return;
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -151,9 +179,9 @@ void CowrieProcessor::findDuration(std::string cowrieString) { //duration of the
 
 void CowrieProcessor::findMacCS(std::string cowrieString) { //mac cs
   std::string result = "";
-  int startIndex = cowrieString.find("macCS");
+  int startIndex = cowrieString.find("\"macCS\":");
   if (startIndex != -1) {
-    startIndex += 10;
+    startIndex += 11;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == ']') {
         macCS.push_back(result);
@@ -161,7 +189,11 @@ void CowrieProcessor::findMacCS(std::string cowrieString) { //mac cs
       } else if (cowrieString[i] == ',') {
         result += "  ||  ";
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -170,15 +202,19 @@ void CowrieProcessor::findMacCS(std::string cowrieString) { //mac cs
 
 void CowrieProcessor::findVersion(std::string cowrieString) { //if it can determine their os version
   std::string result = "";
-  int startIndex = cowrieString.find("version");
+  int startIndex = cowrieString.find("\"version\":");
   if (startIndex != -1) {
-    startIndex += 11;
+    startIndex += 12;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == 34) {
         version.push_back(result);
         return;
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -187,9 +223,9 @@ void CowrieProcessor::findVersion(std::string cowrieString) { //if it can determ
 
 void CowrieProcessor::findKexAlgs(std::string cowrieString) { //kex algorithms
   std::string result = "";
-  int startIndex = cowrieString.find("kexAlgs");
+  int startIndex = cowrieString.find("\"kexAlgs\":");
   if (startIndex != -1) {
-    startIndex += 12;
+    startIndex += 13;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == 34) {
         kexAlgs.push_back(result);
@@ -197,7 +233,11 @@ void CowrieProcessor::findKexAlgs(std::string cowrieString) { //kex algorithms
       } else if (cowrieString[i] == ',') {
         result += "  ||  ";
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -206,9 +246,9 @@ void CowrieProcessor::findKexAlgs(std::string cowrieString) { //kex algorithms
 
 void CowrieProcessor::findCompCS(std::string cowrieString) { //comp cs
   std::string result = "";
-  int startIndex = cowrieString.find("compCS");
+  int startIndex = cowrieString.find("\"compCS\":");
   if (startIndex != -1) {
-    startIndex += 11;
+    startIndex += 12;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == ']') {
         compCS.push_back(result);
@@ -216,7 +256,11 @@ void CowrieProcessor::findCompCS(std::string cowrieString) { //comp cs
       } else if (cowrieString[i] == ',') {
         result += "  ||  ";
       } else if (cowrieString[i] != 34) {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -225,9 +269,9 @@ void CowrieProcessor::findCompCS(std::string cowrieString) { //comp cs
 
 void CowrieProcessor::findKeyAlgs(std::string cowrieString) { //key algorithms (encryption)
   std::string result = "";
-  int startIndex = cowrieString.find("keyAlgs");
+  int startIndex = cowrieString.find("\"keyAlgs\":");
   if (startIndex != -1) {
-    startIndex += 12;
+    startIndex += 13;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == ']') {
         keyAlgs.push_back(result);
@@ -235,7 +279,11 @@ void CowrieProcessor::findKeyAlgs(std::string cowrieString) { //key algorithms (
       } else if (cowrieString[i] == ',') {
         result += "  ||  ";
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -244,9 +292,9 @@ void CowrieProcessor::findKeyAlgs(std::string cowrieString) { //key algorithms (
 
 void CowrieProcessor::findEncCS(std::string cowrieString) { //encryption cs
   std::string result = "";
-  int startIndex = cowrieString.find("encCS");
+  int startIndex = cowrieString.find("\"encCS\"");
   if (startIndex != -1) {
-    startIndex += 10;
+    startIndex += 11;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == ']') {
         encCS.push_back(result);
@@ -254,7 +302,11 @@ void CowrieProcessor::findEncCS(std::string cowrieString) { //encryption cs
       } else if (cowrieString[i] == ',') {
         result += "  ||  ";
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -263,15 +315,19 @@ void CowrieProcessor::findEncCS(std::string cowrieString) { //encryption cs
 
 void CowrieProcessor::findUsername(std::string cowrieString) { //username attempted
   std::string result = "";
-  int startIndex = cowrieString.find("username");
+  int startIndex = cowrieString.find("\"username\":");
   if (startIndex != -1) {
-    startIndex += 12;
+    startIndex += 13;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == 34) {
         username.push_back(result);
         return;
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -280,15 +336,19 @@ void CowrieProcessor::findUsername(std::string cowrieString) { //username attemp
 
 void CowrieProcessor::findPassword(std::string cowrieString) { //password attempted
   std::string result = "";
-  int startIndex = cowrieString.find("password");
+  int startIndex = cowrieString.find("\"password\":");
   if (startIndex != -1) {
-    startIndex += 12;
+    startIndex += 13;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == 34) {
         password.push_back(result);
         return;
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -297,15 +357,19 @@ void CowrieProcessor::findPassword(std::string cowrieString) { //password attemp
 
 void CowrieProcessor::findInput(std::string cowrieString) { //commands input
   std::string result = "";
-  int startIndex = cowrieString.find("input");
+  int startIndex = cowrieString.find("\"input\":");
   if (startIndex != -1) {
-    startIndex += 8;
+    startIndex += 10;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == 34) {
         input.push_back(result);
         return;
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -323,7 +387,11 @@ void CowrieProcessor::findSession(std::string cowrieString) { //unique session i
         sessionHex.push_back(result);
         return;
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -335,13 +403,17 @@ void CowrieProcessor::findTimestamp(std::string cowrieString) { //timestamp
   std::string result = "";
   int startIndex = cowrieString.find("\"timestamp\":");
   if (startIndex != -1) {
-    startIndex += 14;
+    startIndex += 15;
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == 34 || cowrieString[i] == 'Z') {
         timestamp.push_back(result);
         return;
       } else {
-        result += cowrieString[i];
+        if (cowrieString[i] == ',' || cowrieString[i] == ';') { //for when it prints to a csv - these are the separators
+          result += "||"; //this separates them without putting them in different columns in the csv
+        } else {
+          result += cowrieString[i]; //else add char by char
+        }
       }
     }
   }
@@ -424,7 +496,7 @@ std::string CowrieProcessor::findCSVFileNumber() { //if cowrieProcessed.csv and 
 void CowrieProcessor::outputCSV() { //add to a .csv file
   std::string line = "EventID,SourceIP,SourcePort,DestinationIP,DestinationPort,Message,Duration,MacCS,Version,KexAlgs,CompCS,keyAlgs,EncCS,Username,Password,Input,Session,Timestamp\n"; //header line for when looking at the .csv file
   for (int i = 0; i < eventID.size(); i++) {
-    if (eventID[i] != "cowrie.direct-tcpip.request" && eventID[i] != "cowrie.direct-tcpip.data") { //these come from other servers on the network so they're not used for this
+    if (eventID[i] != "cowrie.direct-tcpip.request" && eventID[i] != "cowrie.direct-tcpip.data" && eventID[i] != "cowrie.client.size" && eventID[i] != "cowrie.client.version" && eventID[i].length() > 2) { //these come from other servers on the network so they're not used for this
       line += eventID[i]; line += ","; //add line then a comma (comma separated values file)
       line += srcIP[i]; line += ","; //add source ip
       line += std::to_string(srcPort[i]); line += ","; //add source port
