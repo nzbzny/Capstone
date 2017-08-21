@@ -12,6 +12,11 @@ DataCollection::DataCollection() {
   nmapData; //initializes the nmapData vector with no elements to start with
   tcpdumpData; //initializes the tcpdumpData vector with no elements to start with
   logData; //initializes the logData vector with no elements to start with
+  oldCowrieFileNames; //initializes vector with no elements to start with
+  currentCowrieFileName = "cowrie.json"; //first logged file
+  oldCowrieFileNames.push_back(currentCowrieFileName); //add to the list of old names so it doesn't see it and return that there's a new filename
+  oldCowrieFileNames.push_back("cowrie.json~");
+  lastCowrieDataSize = 0;
   //setup();
 }
 
@@ -352,6 +357,22 @@ std::vector<std::string> DataCollection::getCowrieData() {
   return cowrieData;
 }
 
+std::vector<std::string> DataCollection::getNewCowrieData() {
+  // std::cout << "getNewCowrieData entered\n";
+  std::vector<std::string> newDataVector; //only the new data
+  // std::cout << "cowrieDataSize: " << cowrieData.size() << "\n";
+  // std::cout << "lastCowrieDataSize: " << lastCowrieDataSize << "\n";
+  for (int i = lastCowrieDataSize; i < cowrieData.size(); i++) { //add from the new data to the end
+    newDataVector.push_back(cowrieData.at(i)); //add to the new vector
+    // std::cout << "in for loop\n";
+    // std::cout << cowrieData.at(i) << "\n";
+    // std::cout << "newDataVectorSize: " << newDataVector.size();
+  }
+  // std::cout << "out of for loop\n";
+  // std::cout << "newDataVectorSize: " << newDataVector.size();
+  return newDataVector;
+}
+
 std::vector<std::string> DataCollection::getTCPDumpDataFile() {
   std::vector<std::string> tcpdumpDataFile;
   std::string dumpLine; //the install version of the program
@@ -388,7 +409,7 @@ std::vector<std::string> DataCollection::getTCPDumpDataFile() {
   return tcpdumpDataFile;
 }
 
-void DataCollection::getCowrieTesting() {
+void DataCollection::getCowrie() {
   std::string line; //required to get the file value line by line
   std::string fileValue; //the string form of what is read in the file
   std::string message = ""; //messages file value
@@ -400,30 +421,111 @@ void DataCollection::getCowrieTesting() {
   int lineCounter = 0; //for counting the number of lines to add to the cowrieData vector
 
 
-  fileStream.open("cowrie.json"); //opens the filestream //TODO: may need to be messages.txt, not sure about that. Will check when I get home and can check on the server
+  fileStream.open(currentCowrieFileName); //opens the filestream //TODO: may need to be messages.txt, not sure about that. Will check when I get home and can check on the server
   while (getline(fileStream, line)) { //while there are still lines in the filestream
-    message = message + line + "\n"; //append filevalue
-    lineCounter++;
+    if (line != "") {
+      cowrieData.push_back(line); //add to the vector
+    }
   }
   fileStream.close(); //close the filestream
-  if (lineCounter != 0) { //if the file isn't empty
-    cowrieStartIndex = 0; //start of first line
-    cowrieEndIndex = message.find("}"); //differentiates between lines
-    cowrieLength = cowrieEndIndex - cowrieStartIndex; //length of the line
-    cowrieSubstr = message.substr(cowrieStartIndex, cowrieLength); //create the substring for the line
-    cowrieData.push_back(cowrieSubstr); //add the substring as the last element in the vector
+}
+
+void DataCollection::emptyNmapData() {
+  std::vector<std::string> tempVector; //temporary vector that only exists within the scope of this function
+  nmapData.swap(tempVector); //swaps the full vector with the empty vector that is deleted on completion of the function
+}
+
+void DataCollection::emptyLogData() {
+  std::vector<std::string> tempVector; //temporary vector that only exists within the scope of this function
+  logData.swap(tempVector); //swaps the full vector with the empty vector that is deleted on completion of the function
+}
+
+void DataCollection::emptyTCPDumpData() {
+  std::vector<std::string> tempVector; //temporary vector that only exists within the scope of this function
+  tcpdumpData.swap(tempVector); //swaps the full vector with the empty vector that is deleted on completion of the function
+}
+
+void DataCollection::emptyCowrieData() {
+  std::vector<std::string> tempVector; //temporary vector that only exists within the scope of this function
+  cowrieData.swap(tempVector); //swaps the full vector with the empty vector that is deleted on completion of the function
+}
+
+bool DataCollection::newCowrieFileName() {
+  system("ls > ls.txt"); //store contents of ls into ls.txt to check for a new file
+  std::vector<std::string> list; //contents of ls.txt
+  std::string line = ""; //temp variable
+  std::ifstream filestream; //create filestream for reading the file
+  bool oldFileName = false; //tracks if it's an old filename
+  filestream.open("ls.txt"); //open the filestream
+  while (getline(filestream, line)) { //while end of file not reached
+    list.push_back(line); //add the line to the list vector
   }
-  for (int i = 1; i < lineCounter; i++) { //go through every line
-    cowrieStartIndex = message.find("{", cowrieEndIndex); //new line start index
-    cowrieEndIndex = message.find("}", cowrieStartIndex + 1); //new line end index
-    cowrieLength = cowrieEndIndex - cowrieStartIndex; //new line length
-    cowrieSubstr = message.substr(cowrieStartIndex, cowrieLength); //create new line substring
-    cowrieData.push_back(cowrieSubstr); //add new line substring to the vector
+  //system("rm -f ls.txt");
+  for (int i = 0; i < list.size(); i++) { //scroll through the files in the directory
+    oldFileName = false; //reset oldFilename at the beginning of each iteration
+    //std::cout << list.at(i) << "\n";
+    //std::cout << "list at " << i << ": " << list.at(i) << "\n";
+    if (list.at(i).find("cowrie.json") != -1) { //if this line is one of the cowrie log files
+      for (int j = 0; j < oldCowrieFileNames.size(); j++) { //scroll through old cowrie filenames
+        if (list.at(i) == oldCowrieFileNames.at(j)) { //if it's an old cowrie file
+          oldFileName = true; //it is an old filename
+          break; //stop iterating through old filenames
+        }
+      }
+    } else {
+      oldFileName = true; //it's not an old filename but it's not a new good filename so it's as useful as an old filename
+    }
+    if (!oldFileName) {
+      oldCowrieFileNames.push_back(currentCowrieFileName); //add the new old one to the list of old names";
+      oldCowrieFileNames.push_back(currentCowrieFileName + "~"); //sometimes appears
+      currentCowrieFileName = list.at(i); //new filename
+      return true; //there is a new filename
+    }
+  }
+  return false; //if there was never a new filename
+}
+
+bool DataCollection::newCowrieData() {
+  std::string lastCowrieValue = "";
+  if (newCowrieFileName()) { //if there is a new file there will be new data
+    emptyCowrieData(); //empty the old data
+    getCowrie(); //refill it with new data from the new file
+    lastCowrieDataSize = 0;
+    return true; //there is new data
+  }
+  if (cowrieData.size() == 0) { //if there is no current cowrie data
+    // std::cout << "no cowrie data\n";
+    lastCowrieDataSize = 0;
+    getCowrie();
+    return true; //all data is new data
+  } else { //if there is current data
+    lastCowrieValue = cowrieData.at(cowrieData.size() - 1); //find the last string
+    lastCowrieDataSize = cowrieData.size(); //set the datasize variable so it knows where to go on from
+  }
+  emptyCowrieData(); //empty the current data
+  getCowrie(); //refill it with new data from the current file
+  if (cowrieData.size() != 0) { //if there were no errors collecting the data`
+    if (cowrieData.at(cowrieData.size() - 1) == lastCowrieValue) { //if the new last line and the old last line were the same
+      // std::cout << "\nno new data\n";
+      return false; //there is no new data
+    } else { //if they were different
+      return true; //there is new data
+    }
   }
 }
 
+void DataCollection::collectNewCowrieData() { //write only the most recent data to the cowrie file
+  std::vector<std::string> tempCowrieVector; //temporary vector
+  // std::cout << "\nlastCowrieDataSize: " << lastCowrieDataSize;
+  // std::cout << "\ncowrieDataSize: " << cowrieData.size() << "\n";
+  for (int i = lastCowrieDataSize; i < cowrieData.size(); i++) {
+    tempCowrieVector.push_back(cowrieData.at(i)); //add the new data to a vector
+  }
+  cowrieData.swap(tempCowrieVector); //swap the new data vector with the full data vector
+}
 
-//TODO: set up the iptables rules on the honeypot server. Then check and see how that compares to TCPDump. Maybe you don't have to worry about TCPDump
+
+
 
 
 

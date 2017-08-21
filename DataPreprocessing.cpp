@@ -3,15 +3,29 @@
  * Created on November 3, 2016
  * Author: Noah Zbozny
  */
+
+/*
+ *
+ * TCPDumpProcessor and LogFileProcessor are no longer implemented - CowrieProcessor is the only source of data being used at the moment.
+ * Given the time for the project, there was not enough time to link them all together and use them all for data collection, so since Cowrie is the most valuable data source it is the only one implemented.
+ *
+ */
+
 #include "DataPreprocessing.h"
 
 DataPreprocessing::DataPreprocessing() {
   tcpdump;
   logs;
+  cowrie;
 }
 
 void DataPreprocessing::runProcessTCPDump(std::vector<std::string> tcpdumpData) {
   tcpdump.processTCPDump(tcpdumpData); //run the process code
+}
+
+bool DataPreprocessing::processCowrie(std::vector<std::string> cowrieData) {
+  cowrie.process(cowrieData); //run the processing code
+  return cowrie.outputCSV(); //output to a csv file
 }
 
 void DataPreprocessing::processNmap(std::vector<std::string> nmapData) {
@@ -58,28 +72,8 @@ void DataPreprocessing::checkTorRouter() {
   std::cout << counter << "\n"; //output the counter
 }
 
-int main() {
-  DataCollection collector;
-  TCPDumpProcessor tcpdump;
-  DataPreprocessing processor;
-  LogFileProcessor logs;
-  CowrieProcessor cowrie;
-
-/*  collector.getLogsTesting(); //get temp log file
-  std::vector<std::string> logVector = collector.getLogData(); //add temp log file to vector
-  logs.processLogs(logVector); //process
-  logs.outputCSV(); //output
-*/
-/*  std::vector<std::string> tcpdumpData = collector.getTCPDumpDataFile(); //get temp file
-  std::cout << "collector done";
-  tcpdump.processTCPDump(tcpdumpData); //process
-  std::cout << "processed << \n";
-  tcpdump.outputCSV(); //output
-*/
-
-  collector.getCowrieTesting(); //get temp file
-  std::vector<std::string> cowrieData = collector.getCowrieData(); //add temp file to vector
-  cowrie.process(cowrieData); //process
-  cowrie.outputCSV(); //output
-
+void DataPreprocessing::emptyData() {
+  //tcpdump.emptyData();
+  //logs.emptyData();
+  cowrie.emptyData();
 }

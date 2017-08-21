@@ -48,7 +48,7 @@ void CowrieProcessor::findEventID(std::string cowrieString) { //find the event -
       }
     }
   }
-  eventID.push_back(" "); //fail
+  eventID.push_back("MISSING"); //fail
 }
 
 void CowrieProcessor::findSourceIP(std::string cowrieString) { //source ip
@@ -69,7 +69,7 @@ void CowrieProcessor::findSourceIP(std::string cowrieString) { //source ip
       }
     }
   }
-  srcIP.push_back(" "); //fail
+  srcIP.push_back("MISSING"); //fail
 }
 
 void CowrieProcessor::findSourcePort(std::string cowrieString) { //source port
@@ -132,7 +132,7 @@ void CowrieProcessor::findDestinationIP(std::string cowrieString) { //destinatio
       }
     }
   }
-  destIP.push_back(" ");
+  destIP.push_back("MISSING");
 }
 
 void CowrieProcessor::findMessage(std::string cowrieString) { //message stating the connection was lost or dropped or a command was entered, etc.
@@ -153,7 +153,7 @@ void CowrieProcessor::findMessage(std::string cowrieString) { //message stating 
       }
     }
   }
-  message.push_back(" ");
+  message.push_back("MISSING");
 }
 
 void CowrieProcessor::findDuration(std::string cowrieString) { //duration of the session - this only appears when the session is closed so the other rows are infilled in excel later
@@ -174,7 +174,7 @@ void CowrieProcessor::findDuration(std::string cowrieString) { //duration of the
       }
     }
   }
-  duration.push_back(" ");
+  duration.push_back("-1");
 }
 
 void CowrieProcessor::findMacCS(std::string cowrieString) { //mac cs
@@ -197,7 +197,7 @@ void CowrieProcessor::findMacCS(std::string cowrieString) { //mac cs
       }
     }
   }
-  macCS.push_back(" ");
+  macCS.push_back("MISSING");
 }
 
 void CowrieProcessor::findVersion(std::string cowrieString) { //if it can determine their os version
@@ -218,7 +218,7 @@ void CowrieProcessor::findVersion(std::string cowrieString) { //if it can determ
       }
     }
   }
-  version.push_back(" ");
+  version.push_back("MISSING");
 }
 
 void CowrieProcessor::findKexAlgs(std::string cowrieString) { //kex algorithms
@@ -241,7 +241,7 @@ void CowrieProcessor::findKexAlgs(std::string cowrieString) { //kex algorithms
       }
     }
   }
-  kexAlgs.push_back(" ");
+  kexAlgs.push_back("MISSING");
 }
 
 void CowrieProcessor::findCompCS(std::string cowrieString) { //comp cs
@@ -264,7 +264,7 @@ void CowrieProcessor::findCompCS(std::string cowrieString) { //comp cs
       }
     }
   }
-  compCS.push_back(" ");
+  compCS.push_back("MISSING");
 }
 
 void CowrieProcessor::findKeyAlgs(std::string cowrieString) { //key algorithms (encryption)
@@ -287,7 +287,7 @@ void CowrieProcessor::findKeyAlgs(std::string cowrieString) { //key algorithms (
       }
     }
   }
-  keyAlgs.push_back(" ");
+  keyAlgs.push_back("MISSING");
 }
 
 void CowrieProcessor::findEncCS(std::string cowrieString) { //encryption cs
@@ -310,7 +310,7 @@ void CowrieProcessor::findEncCS(std::string cowrieString) { //encryption cs
       }
     }
   }
-  encCS.push_back(" ");
+  encCS.push_back("MISSING");
 }
 
 void CowrieProcessor::findUsername(std::string cowrieString) { //username attempted
@@ -331,7 +331,7 @@ void CowrieProcessor::findUsername(std::string cowrieString) { //username attemp
       }
     }
   }
-  username.push_back(" ");
+  username.push_back("MISSING");
 }
 
 void CowrieProcessor::findPassword(std::string cowrieString) { //password attempted
@@ -352,7 +352,7 @@ void CowrieProcessor::findPassword(std::string cowrieString) { //password attemp
       }
     }
   }
-  password.push_back(" ");
+  password.push_back("MISSING");
 }
 
 void CowrieProcessor::findInput(std::string cowrieString) { //commands input
@@ -373,7 +373,7 @@ void CowrieProcessor::findInput(std::string cowrieString) { //commands input
       }
     }
   }
-  input.push_back(" ");
+  input.push_back("MISSING");
 }
 
 void CowrieProcessor::findSession(std::string cowrieString) { //unique session id
@@ -403,7 +403,9 @@ void CowrieProcessor::findTimestamp(std::string cowrieString) { //timestamp
   std::string result = "";
   int startIndex = cowrieString.find("\"timestamp\":");
   if (startIndex != -1) {
-    startIndex += 15;
+    startIndex += 14;
+    date.push_back(cowrieString.substr(startIndex, 10)); //format for the date is always 9 chars (yyy-mm-dd)
+    startIndex += 11; //9 for the date and 1 for the 'T' that separates the date and time
     for (int i = startIndex; i < cowrieString.length(); i++) {
       if (cowrieString[i] == 34 || cowrieString[i] == 'Z') {
         timestamp.push_back(result);
@@ -417,54 +419,54 @@ void CowrieProcessor::findTimestamp(std::string cowrieString) { //timestamp
       }
     }
   }
-  timestamp.push_back(" ");
+  timestamp.push_back("MISSING");
 }
 
 void CowrieProcessor::process(std::vector<std::string> cowrieData) {
   for (int i = 0; i < cowrieData.size(); i++) { //process everything
-    findEventID(cowrieData[i]);
-    findSourceIP(cowrieData[i]);
-    findSourcePort(cowrieData[i]);
-    findDestinationPort(cowrieData[i]);
-    findDestinationIP(cowrieData[i]);
-    findMessage(cowrieData[i]);
-    findDuration(cowrieData[i]);
-    findMacCS(cowrieData[i]);
-    findVersion(cowrieData[i]);
-    findKexAlgs(cowrieData[i]);
-    findCompCS(cowrieData[i]);
-    findKeyAlgs(cowrieData[i]);
-    findEncCS(cowrieData[i]);
-    findUsername(cowrieData[i]);
-    findPassword(cowrieData[i]);
-    findInput(cowrieData[i]);
-    findSession(cowrieData[i]);
-    findTimestamp(cowrieData[i]);
+    findEventID(cowrieData.at(i));
+    findSourceIP(cowrieData.at(i));
+    findSourcePort(cowrieData.at(i));
+    findDestinationPort(cowrieData.at(i));
+    findDestinationIP(cowrieData.at(i));
+    findMessage(cowrieData.at(i));
+    findDuration(cowrieData.at(i));
+    findMacCS(cowrieData.at(i));
+    findVersion(cowrieData.at(i));
+    findKexAlgs(cowrieData.at(i));
+    findCompCS(cowrieData.at(i));
+    findKeyAlgs(cowrieData.at(i));
+    findEncCS(cowrieData.at(i));
+    findUsername(cowrieData.at(i));
+    findPassword(cowrieData.at(i));
+    findInput(cowrieData.at(i));
+    findSession(cowrieData.at(i));
+    findTimestamp(cowrieData.at(i));
   }
 }
 
 void CowrieProcessor::print() { //print for testing
   for (int i = 0; i < eventID.size(); i++) {
-    std::cout << "Event ID: " << eventID[i] << "\n";
-    std::cout << "Source IP: " << srcIP[i] << "\n";
-    std::cout << "Source Port: " << srcPort[i] << "\n";
-    std::cout << "Destination IP: " << destIP[i] << "\n";
-    std::cout << "Destination Port: " << destPort[i] << "\n";
-    std::cout << "Message: " << message[i] << "\n";
-    std::cout << "Duration: " << duration[i] << "\n";
-    std::cout << "Mac CS: " << macCS[i] << "\n";
-    std::cout << "Version: " << version[i] << "\n";
-    std::cout << "Kex Algs: " << kexAlgs[i] << "\n";
-    std::cout << "Comp CS: " << compCS[i] << "\n";
-    std::cout << "Key Algs: " << keyAlgs[i] << "\n";
-    std::cout << "Enc CS: " << encCS[i] << "\n";
-    std::cout << "Username: " << username[i] << "\n";
-    std::cout << "Password: " << password[i] << "\n";
-    std::cout << "Input: " << input[i] << "\n";
-    std::cout << "Session: " << session[i] << "\n";
-    std::cout << "Session Hex: " << sessionHex[i] << "\n";
+    std::cout << "Event ID: " << eventID.at(i) << "\n";
+    std::cout << "Source IP: " << srcIP.at(i) << "\n";
+    std::cout << "Source Port: " << srcPort.at(i) << "\n";
+    std::cout << "Destination IP: " << destIP.at(i) << "\n";
+    std::cout << "Destination Port: " << destPort.at(i) << "\n";
+    std::cout << "Message: " << message.at(i) << "\n";
+    std::cout << "Duration: " << duration.at(i) << "\n";
+    std::cout << "Mac CS: " << macCS.at(i) << "\n";
+    std::cout << "Version: " << version.at(i) << "\n";
+    std::cout << "Kex Algs: " << kexAlgs.at(i) << "\n";
+    std::cout << "Comp CS: " << compCS.at(i) << "\n";
+    std::cout << "Key Algs: " << keyAlgs.at(i) << "\n";
+    std::cout << "Enc CS: " << encCS.at(i) << "\n";
+    std::cout << "Username: " << username.at(i) << "\n";
+    std::cout << "Password: " << password.at(i) << "\n";
+    std::cout << "Input: " << input.at(i) << "\n";
+    std::cout << "Session: " << session.at(i) << "\n";
+    std::cout << "Session Hex: " << sessionHex.at(i) << "\n";
     std::cout << "HTD Test: " << hexToDec("3dc3174c") << "\n";
-    std::cout << "Timestamp: " << timestamp[i] << "\n";
+    std::cout << "Timestamp: " << timestamp.at(i) << "\n";
     std::cout << "Iteration: " << i << "\n\n";
   }
 }
@@ -493,30 +495,34 @@ std::string CowrieProcessor::findCSVFileNumber() { //if cowrieProcessed.csv and 
   return "";
 }
 
-void CowrieProcessor::outputCSV() { //add to a .csv file
-  std::string line = "EventID,SourceIP,SourcePort,DestinationIP,DestinationPort,Message,Duration,MacCS,Version,KexAlgs,CompCS,keyAlgs,EncCS,Username,Password,Input,Session,Timestamp\n"; //header line for when looking at the .csv file
+bool CowrieProcessor::outputCSV() { //add to a .csv file
+  std::string line = "EventID,SourceIP,SourcePort,DestinationIP,DestinationPort,Message,Duration,MacCS,Version,KexAlgs,CompCS,keyAlgs,EncCS,Username,Password,Input,Session,Date,Timestamp\n"; //header line for when looking at the .csv file
   for (int i = 0; i < eventID.size(); i++) {
-    if (eventID[i] != "cowrie.direct-tcpip.request" && eventID[i] != "cowrie.direct-tcpip.data" && eventID[i] != "cowrie.client.size" && eventID[i] != "cowrie.client.version" && eventID[i].length() > 2) { //these come from other servers on the network so they're not used for this
-      line += eventID[i]; line += ","; //add line then a comma (comma separated values file)
-      line += srcIP[i]; line += ","; //add source ip
-      line += std::to_string(srcPort[i]); line += ","; //add source port
-      line += destIP[i]; line += ","; //add destination ip
-      line += std::to_string(destPort[i]); line += ","; //add destinato port
-      line += message[i]; line += ","; //add message
-      line += duration[i]; line += ","; //add duration
-      line += macCS[i]; line += ","; //add mac cs
-      line += version[i]; line += ","; //add version
-      line += kexAlgs[i]; line += ","; //add kex algorithms
-      line += compCS[i]; line += ","; //add comp cs
-      line += keyAlgs[i]; line += ","; //add key algorithms
-      line += encCS[i]; line += ","; //add encryption cs
-      line += username[i]; line += ","; //add username
-      line += password[i]; line += ","; //add password
-      line += input[i]; line += ","; //add input
-      line += sessionHex[i]; line += ","; //was to_string(session[i])
-      line += timestamp[i]; //add timestamp
+    if (eventID.at(i) != "cowrie.direct-tcpip.request" && eventID.at(i) != "cowrie.direct-tcpip.data" && eventID.at(i) != "cowrie.client.size" && eventID.at(i) != "cowrie.client.version" && eventID.at(i).length() > 2) { //these come from other servers on the network so they're not used for this
+      line += eventID.at(i); line += ","; //add line then a comma (comma separated values file)
+      line += srcIP.at(i); line += ","; //add source ip
+      line += std::to_string(srcPort.at(i)); line += ","; //add source port
+      line += destIP.at(i); line += ","; //add destination ip
+      line += std::to_string(destPort.at(i)); line += ","; //add destinato port
+      line += message.at(i); line += ","; //add message
+      line += duration.at(i); line += ","; //add duration
+      line += macCS.at(i); line += ","; //add mac cs
+      line += version.at(i); line += ","; //add version
+      line += kexAlgs.at(i); line += ","; //add kex algorithms
+      line += compCS.at(i); line += ","; //add comp cs
+      line += keyAlgs.at(i); line += ","; //add key algorithms
+      line += encCS.at(i); line += ","; //add encryption cs
+      line += username.at(i); line += ","; //add username
+      line += password.at(i); line += ","; //add password
+      line += input.at(i); line += ","; //add input
+      line += sessionHex.at(i); line += ","; //was to_string(session.at(i))
+      line += date.at(i); line += ","; //add date
+      line += timestamp.at(i); //add timestamp
       line += "\n"; //new line = new row in the excel file
     }
+  }
+  if (line == "EventID,SourceIP,SourcePort,DestinationIP,DestinationPort,Message,Duration,MacCS,Version,KexAlgs,CompCS,keyAlgs,EncCS,Username,Password,Input,Session,Date,Timestamp\n") { //if nothing has been added to the line and no proper datapoints were found (not tcpip requests etc.)
+    return false; //exit the loop - don't write to a file
   }
   std::ofstream filestream; //create filestream
   std::string filename = findCSVFileNumber(); //find filename
@@ -525,4 +531,61 @@ void CowrieProcessor::outputCSV() { //add to a .csv file
   filestream.open(filename.c_str()); //open filestream
   filestream << line; //write to file
   filestream.close(); //close filestream
+  return true;
+}
+
+void CowrieProcessor::emptyData() { //clear the data in the preprocessing code
+  std::vector<std::string> eventIDTemp;
+  std::vector<std::string> srcIPTemp;
+  std::vector<int> srcPortTemp;
+  std::vector<int> destPortTemp;
+  std::vector<std::string> destIPTemp;
+  std::vector<std::string> messageTemp;
+  std::vector<std::string> durationTemp;
+  std::vector<std::string> macCSTemp;
+  std::vector<std::string> versionTemp;
+  std::vector<std::string> kexAlgsTemp;
+  std::vector<std::string> compCSTemp;
+  std::vector<std::string> keyAlgsTemp;
+  std::vector<std::string> encCSTemp;
+  std::vector<std::string> usernameTemp;
+  std::vector<std::string> passwordTemp;
+  std::vector<std::string> inputTemp;
+  std::vector<int> sessionTemp;
+  std::vector<std::string> sessionHexTemp;
+  std::vector<std::string> timestampTemp;
+  std::vector<std::string> dateTemp;
+
+  eventIDTemp.swap(eventID);
+  srcIPTemp.swap(srcIP);
+  srcPortTemp.swap(srcPort);
+  destPortTemp.swap(destPort);
+  destIPTemp.swap(destIP);
+  messageTemp.swap(message);
+  durationTemp.swap(duration);
+  macCSTemp.swap(macCS);
+  versionTemp.swap(version);
+  kexAlgsTemp.swap(kexAlgs);
+  compCSTemp.swap(compCS);
+  keyAlgsTemp.swap(keyAlgs);
+  encCSTemp.swap(encCS);
+  usernameTemp.swap(username);
+  passwordTemp.swap(password);
+  inputTemp.swap(input);
+  sessionTemp.swap(session);
+  sessionHexTemp.swap(sessionHex);
+  timestampTemp.swap(timestamp);
+  dateTemp.swap(date);
+}
+
+std::vector<std::string> CowrieProcessor::getUsernames() {
+  return username;
+}
+
+std::vector<std::string> CowrieProcessor::getPasswords() {
+  return password;
+}
+
+std::vector<std::string> CowrieProcessor::getInputs() {
+  return input;
 }

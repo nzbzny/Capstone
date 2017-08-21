@@ -406,38 +406,38 @@ void TCPDumpProcessor::tcpFindTCPPacketLength(std::string tcpdumpString) { //tcp
 
 void TCPDumpProcessor::printTCP() { //print to terminal for testing
   for (int i = 0; i < timestamp.size(); i++) {
-    std::cout << "Timestamp: " << timestamp[i] << "\n";
-    std::cout << "Traffic Direction: " << trafficDirection[i] << "\n";
-    std::cout << "Mac Address: " << macAddress[i] << "\n";
-    std::cout << "Connection Type: " << connectionType[i] << "\n";
-    std::cout << "Connection Protocol: " << connectionProtocol[i] << "\n";
-    std::cout << "IP Packet Length: " << ipPacketLength[i] << "\n";
-    std::cout << "TOS (hex): " << tosHex[i] << "\n";
-    std::cout << "TOS (dec): " << ipTOS[i] << "\n";
-    std::cout << "TTL: " << ipTTL[i] << "\n";
-    std::cout << "ID: " << ipID[i] << "\n";
-    std::cout << "Fragment Offset: " << ipFragmentOffset[i] << "\n";
-    for (int j = 0; j < ipFlags[i].size(); j++) {
-      std::cout << "IP Flags: " << ipFlags[i][j] << "\t";
+    std::cout << "Timestamp: " << timestamp.at(i) << "\n";
+    std::cout << "Traffic Direction: " << trafficDirection.at(i) << "\n";
+    std::cout << "Mac Address: " << macAddress.at(i) << "\n";
+    std::cout << "Connection Type: " << connectionType.at(i) << "\n";
+    std::cout << "Connection Protocol: " << connectionProtocol.at(i) << "\n";
+    std::cout << "IP Packet Length: " << ipPacketLength.at(i) << "\n";
+    std::cout << "TOS (hex): " << tosHex.at(i) << "\n";
+    std::cout << "TOS (dec): " << ipTOS.at(i) << "\n";
+    std::cout << "TTL: " << ipTTL.at(i) << "\n";
+    std::cout << "ID: " << ipID.at(i) << "\n";
+    std::cout << "Fragment Offset: " << ipFragmentOffset.at(i) << "\n";
+    for (int j = 0; j < ipFlags.at(i).size(); j++) {
+      std::cout << "IP Flags: " << ipFlags.at(i)[j] << "\t";
     }
     std::cout << "\n";
-    std::cout << "Source IP: " << srcIP[i] << "\n";
-    std::cout << "Source Port: " << srcPort[i] << "\n";
-    std::cout << "Destination IP: " << destIP[i] << "\n";
-    std::cout << "Destination Port: " << destPort[i] << "\n";
+    std::cout << "Source IP: " << srcIP.at(i) << "\n";
+    std::cout << "Source Port: " << srcPort.at(i) << "\n";
+    std::cout << "Destination IP: " << destIP.at(i) << "\n";
+    std::cout << "Destination Port: " << destPort.at(i) << "\n";
     std::cout << "TCPFlags: ";
-    for (int j = 0; j < tcpFlags[i].size(); j++) {
-      std::cout << (char)tcpFlags[i][j] << " ";
+    for (int j = 0; j < tcpFlags.at(i).size(); j++) {
+      std::cout << (char)tcpFlags.at(i)[j] << " ";
     }
     std::cout << "\n";
-    std::cout << "ack: " << ack[i] << "\n";
-    std::cout << "win: " << win[i] << "\n";
+    std::cout << "ack: " << ack.at(i) << "\n";
+    std::cout << "win: " << win.at(i) << "\n";
     std::cout << "\t";
-    for (int j = 0; j < options[i].size(); j++) {
-      std::cout << options[i][j] << "\n\t";
+    for (int j = 0; j < options.at(i).size(); j++) {
+      std::cout << options.at(i)[j] << "\n\t";
     }
     std::cout << "\b\b\b\b\b\b\b\b";
-    std::cout << "TCP Packet Length: " << tcpPacketLength[i] << "\n";
+    std::cout << "TCP Packet Length: " << tcpPacketLength.at(i) << "\n";
     std::cout << "\n";
   }
 }
@@ -456,7 +456,7 @@ std::vector<std::string> TCPDumpProcessor::fixTCPDumpData(std::vector<std::strin
       resultantData.push_back(startData.at(i) + startData.at(i + 1));
       i++;
     } else {
-      resultantData.push_back(startData[i] + startData[i + 1]);
+      resultantData.push_back(startData.at(i) + startData.at(i + 1));
     }
   }
   if (startData.at(startData.size() - 1)[1] != ' ') {
@@ -470,26 +470,26 @@ void TCPDumpProcessor::processTCPDump(std::vector<std::string> tcpdumpData) { //
   int startIndex = 0;
 
   for (int i = 0; i < tcpdumpDataArray.size(); i++) {
-    if (tcpdumpDataArray[i].find("Request who-has") == -1 || (tcpdumpDataArray[i].find("Reply") == -1 && tcpdumpDataArray[i].find("is-at") == -1)) {
-      if (tcpFindChecksum(tcpdumpDataArray[i]) == true) {
-        startIndex = tcpFindTimestamp(tcpdumpDataArray[i]);
-        startIndex = tcpTrafficDirection(tcpdumpDataArray[i], startIndex);
-        startIndex = tcpFindMacAddress(tcpdumpDataArray[i], startIndex);
-        startIndex = tcpFindConnectionType(tcpdumpDataArray[i], startIndex);
-        startIndex = tcpFindConnectionProtocol(tcpdumpDataArray[i], startIndex);
-        tcpFindIPPacketLength(tcpdumpDataArray[i]);
-        tcpFindTOS(tcpdumpDataArray[i]);
-        tcpFindTTL(tcpdumpDataArray[i]);
-        tcpFindID(tcpdumpDataArray[i]);
-        tcpFindFragmentOffset(tcpdumpDataArray[i]);
-        tcpFindIPFlags(tcpdumpDataArray[i]);
-        tcpFindSource(tcpdumpDataArray[i]);
-        tcpFindDestination(tcpdumpDataArray[i]);
-        tcpFindTCPFlags(tcpdumpDataArray[i]);
-        tcpFindAck(tcpdumpDataArray[i]);
-        tcpFindWin(tcpdumpDataArray[i]);
-        tcpFindOptions(tcpdumpDataArray[i]);
-        tcpFindTCPPacketLength(tcpdumpDataArray[i]);
+    if (tcpdumpDataArray.at(i).find("Request who-has") == -1 || (tcpdumpDataArray.at(i).find("Reply") == -1 && tcpdumpDataArray.at(i).find("is-at") == -1)) {
+      if (tcpFindChecksum(tcpdumpDataArray.at(i)) == true) {
+        startIndex = tcpFindTimestamp(tcpdumpDataArray.at(i));
+        startIndex = tcpTrafficDirection(tcpdumpDataArray.at(i), startIndex);
+        startIndex = tcpFindMacAddress(tcpdumpDataArray.at(i), startIndex);
+        startIndex = tcpFindConnectionType(tcpdumpDataArray.at(i), startIndex);
+        startIndex = tcpFindConnectionProtocol(tcpdumpDataArray.at(i), startIndex);
+        tcpFindIPPacketLength(tcpdumpDataArray.at(i));
+        tcpFindTOS(tcpdumpDataArray.at(i));
+        tcpFindTTL(tcpdumpDataArray.at(i));
+        tcpFindID(tcpdumpDataArray.at(i));
+        tcpFindFragmentOffset(tcpdumpDataArray.at(i));
+        tcpFindIPFlags(tcpdumpDataArray.at(i));
+        tcpFindSource(tcpdumpDataArray.at(i));
+        tcpFindDestination(tcpdumpDataArray.at(i));
+        tcpFindTCPFlags(tcpdumpDataArray.at(i));
+        tcpFindAck(tcpdumpDataArray.at(i));
+        tcpFindWin(tcpdumpDataArray.at(i));
+        tcpFindOptions(tcpdumpDataArray.at(i));
+        tcpFindTCPPacketLength(tcpdumpDataArray.at(i));
       }
     }
   }
@@ -523,41 +523,41 @@ std::string TCPDumpProcessor::findCSVFileNumber() { //if tcpdumpProcessed.csv an
 void TCPDumpProcessor::outputCSV() { //output to a .csv file
   std::string line = "Timestamp,TrafficDirection,MacAddress,ConnectionType,ConnectionProtocol,IPPacketLength,TOS,TTL,ID,FragmentOffset,IPFlags,SourceIP,SourcePort,DestinationIP,DestinationPort,TCPFlags,Ack,Win,Options,TCPPacketLength\n"; //header line for readability of the .csv file
   for (int i = 0; i < timestamp.size(); i++) {
-    line += timestamp[i]; line += ","; //add timestamp, then a comma (comma separated values file)
-    line += std::to_string(trafficDirection[i]); line += ","; //add traffic direction
-    line += macAddress[i]; line += ","; //add mac address
-    line += connectionType[i]; line += ","; //add connection type
-    line += connectionProtocol[i]; line += ","; //add connection protocol
-    line += std::to_string(ipPacketLength[i]); line += ","; //add ip packet length
-    line += std::to_string(ipTOS[i]); line += ","; //add ip type of service
-    line += std::to_string(ipTTL[i]); line += ","; //add ip time to live
-    line += std::to_string(ipID[i]); line += ","; //add ip id
-    line += std::to_string(ipFragmentOffset[i]); line += ","; //add ip fragment offset
+    line += timestamp.at(i); line += ","; //add timestamp, then a comma (comma separated values file)
+    line += std::to_string(trafficDirection.at(i)); line += ","; //add traffic direction
+    line += macAddress.at(i); line += ","; //add mac address
+    line += connectionType.at(i); line += ","; //add connection type
+    line += connectionProtocol.at(i); line += ","; //add connection protocol
+    line += std::to_string(ipPacketLength.at(i)); line += ","; //add ip packet length
+    line += std::to_string(ipTOS.at(i)); line += ","; //add ip type of service
+    line += std::to_string(ipTTL.at(i)); line += ","; //add ip time to live
+    line += std::to_string(ipID.at(i)); line += ","; //add ip id
+    line += std::to_string(ipFragmentOffset.at(i)); line += ","; //add ip fragment offset
     line += "["; //formatting flags
-    for (int j = 0; j < ipFlags[i].size(); j++) {
-      line += ipFlags[i][j]; //add flag
+    for (int j = 0; j < ipFlags.at(i).size(); j++) {
+      line += ipFlags.at(i)[j]; //add flag
       line +=  "  ||  "; //for separating flags within cell
     }
     line += "],"; //end formatting flags
-    line += srcIP[i]; line += ","; //add source ip
-    line += std::to_string(srcPort[i]); line += ","; //add source port
-    line += destIP[i]; line += ","; //add destination ip
-    line += std::to_string(destPort[i]); line += ","; //add destination port
+    line += srcIP.at(i); line += ","; //add source ip
+    line += std::to_string(srcPort.at(i)); line += ","; //add source port
+    line += destIP.at(i); line += ","; //add destination ip
+    line += std::to_string(destPort.at(i)); line += ","; //add destination port
     line += "["; //add formatting for flags
-    for (int j = 0; j < tcpFlags[i].size(); j++) { //output flags
-      line += std::to_string(tcpFlags[i][j]); //output flags
+    for (int j = 0; j < tcpFlags.at(i).size(); j++) { //output flags
+      line += std::to_string(tcpFlags.at(i)[j]); //output flags
       line += "  ||  "; //separating flags within cell
     }
     line += "],"; //end formatting flags
-    line += std::to_string(ack[i]); line += ","; //add acknowledgements
-    line += std::to_string(win[i]); line += ","; //windows
+    line += std::to_string(ack.at(i)); line += ","; //add acknowledgements
+    line += std::to_string(win.at(i)); line += ","; //windows
     line += "["; //start formatting for options
-    for (int j = 0; j < options[i].size(); j++) { //add every option
-      line += options[i][j]; //add options`
+    for (int j = 0; j < options.at(i).size(); j++) { //add every option
+      line += options.at(i)[j]; //add options`
       line += " || "; //separating options within cell
     }
     line += "],"; //end formatting for options
-    line += std::to_string(tcpPacketLength[i]); //add tcp packet length
+    line += std::to_string(tcpPacketLength.at(i)); //add tcp packet length
     line += "\n"; //new line = new row in excel
   }
   std::ofstream filestream; //create filestream

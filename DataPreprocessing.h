@@ -22,20 +22,20 @@
 class DataPreprocessing {
   TCPDumpProcessor tcpdump;
   LogFileProcessor logs;
+  CowrieProcessor cowrie;
 
 
 public:
   DataPreprocessing();
   void runProcessTCPDump(std::vector<std::string> tcpdumpData);
-
-  void processCowrie(std::vector<std::string> cowrieData);
+  bool processCowrie(std::vector<std::string> cowrieData);
   void processNmap(std::vector<std::string> nmapData);
   void runProcessLogs(std::vector<std::string> logsData);
   bool torRouter(std::string ip);
   void printTCP();
   void printLog();
-
   void checkTorRouter();
+  void emptyData();
 };
 
 #endif

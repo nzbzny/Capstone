@@ -22,6 +22,9 @@ class DataCollection {
   std::vector<std::string> logData;
   std::vector<std::string> tcpdumpData;
   std::vector<std::string> cowrieData;
+  std::vector<std::string> oldCowrieFileNames;
+  std::string currentCowrieFileName;
+  int lastCowrieDataSize;
 
 public:
   DataCollection(); //constructor
@@ -40,13 +43,21 @@ public:
   void grabTCPDumpData(); //get the tcpdump data
   void getLogs(); //get iptables logs data
   void getLogsTesting();
-  void getCowrieTesting();
+  void getCowrie();
+  void emptyNmapData();
+  void emptyLogData();
+  void emptyTCPDumpData();
+  void emptyCowrieData();
+  bool newCowrieFileName();
+  bool newCowrieData();
+  void collectNewCowrieData();
   std::vector<std::string> getNmapData();
   std::vector<std::string> getLogData();
   std::vector<std::string> getTCPDumpData();
+  std::vector<std::string> getNewCowrieData();
   std::vector<std::string> getCowrieData();
-
   std::vector<std::string> getTCPDumpDataFile(); //temp for testing
+
 };
 
 #endif

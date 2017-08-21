@@ -36,6 +36,7 @@ class CowrieProcessor {
   std::vector<int> session;
   std::vector<std::string> sessionHex;
   std::vector<std::string> timestamp;
+  std::vector<std::string> date;
 
 public:
   CowrieProcessor();
@@ -62,7 +63,13 @@ public:
   void process(std::vector<std::string> cowrieData);
   void print();
   std::string findCSVFileNumber();
-  void outputCSV();
+  bool outputCSV();
+  void emptyData();
+  void getNewCowrieData();
+
+  std::vector<std::string> getUsernames();
+  std::vector<std::string> getPasswords();
+  std::vector<std::string> getInputs();
 };
 
 #endif

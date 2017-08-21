@@ -270,20 +270,20 @@ void LogFileProcessor::findReset(std::string logString) { //reset value
 
 void LogFileProcessor::processLogs(std::vector<std::string> logVector) {
   for (int i = 0; i < logVector.size(); i++) {
-    if (findTrafficType(logVector[i]) != -1) { //if the traffic type succeeded and was not out traffic - process everything
-      findMacAddress(logVector[i]);
-      findSourceIP(logVector[i]);
-      findDestinationIP(logVector[i]);
-      findLength(logVector[i]);
-      findTOS(logVector[i]);
-      findPrecedence(logVector[i]);
-      findTTL(logVector[i]);
-      findID(logVector[i]);
-      findProtocol(logVector[i]);
-      findSourcePort(logVector[i]);
-      findDestPort(logVector[i]);
-      findWindow(logVector[i]);
-      findReset(logVector[i]);
+    if (findTrafficType(logVector.at(i)) != -1) { //if the traffic type succeeded and was not out traffic - process everything
+      findMacAddress(logVector.at(i));
+      findSourceIP(logVector.at(i));
+      findDestinationIP(logVector.at(i));
+      findLength(logVector.at(i));
+      findTOS(logVector.at(i));
+      findPrecedence(logVector.at(i));
+      findTTL(logVector.at(i));
+      findID(logVector.at(i));
+      findProtocol(logVector.at(i));
+      findSourcePort(logVector.at(i));
+      findDestPort(logVector.at(i));
+      findWindow(logVector.at(i));
+      findReset(logVector.at(i));
     }
   }
 }
@@ -291,23 +291,23 @@ void LogFileProcessor::processLogs(std::vector<std::string> logVector) {
 void LogFileProcessor::print() { //print to terminal for testing
   std::cout << traffic.size() << "\n";
   for (int i = 0; i < traffic.size(); i++) {
-    std::cout << "Traffic: " << traffic[i] << "\n";
-    std::cout << "Mac Address: " << macAddress[i] << "\n";
-    std::cout << "Source IP: " << srcIP[i] << "\n";
-    std::cout << "Destination IP: " << destIP[i] << "\n";
-    std::cout << "Length: " << length[i] << "\n";
-    std::cout << "TOS (hex): " << tosHex[i] << "\n";
-    std::cout << "TOS (dec): " << tosDec[i] << "\n";
-    std::cout << "Precedence (hex): " << precHex[i] << "\n";
-    std::cout << "Precedence (dec): " << precDec[i] << "\n";
-    std::cout << "TTL: " << ttl[i] << "\n";
-    std::cout << "ID: " << id[i] << "\n";
-    std::cout << "Protocol: " << protocol[i] << "\n";
-    std::cout << "Source Port: " << srcPort[i] << "\n";
-    std::cout << "Destination Port: " << destPort[i] << "\n";
-    std::cout << "Window: " << window[i] << "\n";
-    std::cout << "Reset (hex): " << resetHex[i] << "\n";
-    std::cout << "Reset (dec): " << resetDec[i] << "\n";
+    std::cout << "Traffic: " << traffic.at(i) << "\n";
+    std::cout << "Mac Address: " << macAddress.at(i) << "\n";
+    std::cout << "Source IP: " << srcIP.at(i) << "\n";
+    std::cout << "Destination IP: " << destIP.at(i) << "\n";
+    std::cout << "Length: " << length.at(i) << "\n";
+    std::cout << "TOS (hex): " << tosHex.at(i) << "\n";
+    std::cout << "TOS (dec): " << tosDec.at(i) << "\n";
+    std::cout << "Precedence (hex): " << precHex.at(i) << "\n";
+    std::cout << "Precedence (dec): " << precDec.at(i) << "\n";
+    std::cout << "TTL: " << ttl.at(i) << "\n";
+    std::cout << "ID: " << id.at(i) << "\n";
+    std::cout << "Protocol: " << protocol.at(i) << "\n";
+    std::cout << "Source Port: " << srcPort.at(i) << "\n";
+    std::cout << "Destination Port: " << destPort.at(i) << "\n";
+    std::cout << "Window: " << window.at(i) << "\n";
+    std::cout << "Reset (hex): " << resetHex.at(i) << "\n";
+    std::cout << "Reset (dec): " << resetDec.at(i) << "\n";
     std::cout << "\n\n";
   }
 }
@@ -343,20 +343,20 @@ std::string LogFileProcessor::findCSVFileNumber() { //if logProcessed.csv exists
 void LogFileProcessor::outputCSV() { //write to a .csv file
   std::string line = "Traffic,MacAddress,SourceIP,DestinationIP,Length,TOS,Precedence,TTL,ID,Protocol,SourcePort,DestinationPort,Window,Reset\n"; //header line for which value is which
   for (int i = 0; i < traffic.size(); i++) {
-    line += traffic[i]; line += ","; //add the traffic then a comma (comma separated values file)
-    line += macAddress[i]; line += ","; //add mac address
-    line += srcIP[i]; line += ","; //add source ip
-    line += destIP[i]; line += ","; //add destination ip
-    line += std::to_string(length[i]); line += ","; //add length
-    line += std::to_string(tosDec[i]); line += ","; //add tos
-    line += std::to_string(precDec[i]); line += ","; //add precedence
-    line += std::to_string(ttl[i]); line += ","; //add time to live
-    line += std::to_string(id[i]); line += ","; //add id then
-    line += protocol[i]; line += ","; //add protocol
-    line += std::to_string(srcPort[i]); line += ","; //add source port
-    line += std::to_string(destPort[i]); line += ","; //add destination port
-    line += std::to_string(window[i]); line += ","; //add window
-    line += std::to_string(resetDec[i]); //add reset value
+    line += traffic.at(i); line += ","; //add the traffic then a comma (comma separated values file)
+    line += macAddress.at(i); line += ","; //add mac address
+    line += srcIP.at(i); line += ","; //add source ip
+    line += destIP.at(i); line += ","; //add destination ip
+    line += std::to_string(length.at(i)); line += ","; //add length
+    line += std::to_string(tosDec.at(i)); line += ","; //add tos
+    line += std::to_string(precDec.at(i)); line += ","; //add precedence
+    line += std::to_string(ttl.at(i)); line += ","; //add time to live
+    line += std::to_string(id.at(i)); line += ","; //add id then
+    line += protocol.at(i); line += ","; //add protocol
+    line += std::to_string(srcPort.at(i)); line += ","; //add source port
+    line += std::to_string(destPort.at(i)); line += ","; //add destination port
+    line += std::to_string(window.at(i)); line += ","; //add window
+    line += std::to_string(resetDec.at(i)); //add reset value
     line += "\n"; //new line
   }
   std::ofstream filestream; //open filestream
